@@ -12,12 +12,14 @@ import { WasteRequest } from "@/lib/services/request-service";
 import { getPendingRequests, getCollectorJobs, acceptRequest, completeRequest } from "@/lib/services/collector-service";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { CollectorMap } from "@/components/maps/CollectorMap";
 
 export default function CollectorDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [pendingRequests, setPendingRequests] = useState<WasteRequest[]>([]);
   const [myJobs, setMyJobs] = useState<WasteRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [activeTab, setActiveTab] = useState<"available" | "my-jobs">("available");
   const router = useRouter();
 
@@ -124,50 +126,74 @@ export default function CollectorDashboard() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-4"
                 >
-                  <h2 className="text-xl font-bold font-heading">Available Requests Nearby</h2>
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold font-heading text-white">Available Requests Nearby</h2>
+                    <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                      <button 
+                        onClick={() => setViewMode("list")}
+                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'list' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
+                      >
+                        List
+                      </button>
+                      <button 
+                        onClick={() => setViewMode("map")}
+                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'map' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
+                      >
+                        Map
+                      </button>
+                    </div>
+                  </div>
+
                   {loading ? (
                     <div className="h-40 rounded-3xl bg-white/5 animate-pulse" />
-                  ) : pendingRequests.length > 0 ? (
+                  ) : viewMode === "list" ? (
                     <div className="grid gap-4">
-                      {pendingRequests.map((request) => (
-                        <Card key={request.id} className="group overflow-hidden border-white/5 hover:border-secondary/30 transition-all">
-                          <CardContent className="p-0 flex flex-col md:flex-row">
-                            <div className="w-full md:w-48 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
-                              <img src={request.imageUrl} alt={request.type} className="w-full h-full object-cover" />
-                              <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-wider">
-                                {request.type}
-                              </div>
-                            </div>
-                            <div className="p-6 flex-grow flex flex-col justify-between">
-                              <div>
-                                <div className="flex justify-between items-start mb-4">
-                                  <div>
-                                    <h3 className="font-bold text-xl mb-1">{request.userName}'s Pickup</h3>
-                                    <p className="text-slate-400 text-sm flex items-center gap-2">
-                                      <MapPin size={14} className="text-secondary" /> {request.address}
-                                    </p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-xs text-slate-500 uppercase font-bold tracking-widest">Scheduled For</p>
-                                    <p className="text-sm font-semibold">{new Date(request.scheduledAt).toLocaleString()}</p>
-                                  </div>
+                      {pendingRequests.length > 0 ? (
+                        pendingRequests.map((request) => (
+                          <Card key={request.id} className="group overflow-hidden border-white/5 hover:border-secondary/30 transition-all">
+                            <CardContent className="p-0 flex flex-col md:flex-row">
+                              <div className="w-full md:w-48 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
+                                <img src={request.imageUrl} alt={request.type} className="w-full h-full object-cover" />
+                                <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-wider">
+                                  {request.type}
                                 </div>
                               </div>
-                              <Button 
-                                onClick={() => handleAccept(request.id!)}
-                                className="w-full md:w-auto self-end bg-secondary hover:bg-secondary/80 text-white"
-                              >
-                                Accept Job
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                              <div className="p-6 flex-grow flex flex-col justify-between">
+                                <div>
+                                  <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                      <h3 className="font-bold text-xl mb-1">{request.userName}'s Pickup</h3>
+                                      <p className="text-slate-400 text-sm flex items-center gap-2">
+                                        <MapPin size={14} className="text-secondary" /> {request.address}
+                                      </p>
+                                    </div>
+                                    <div className="text-right">
+                                      <p className="text-xs text-slate-500 uppercase font-bold tracking-widest">Scheduled For</p>
+                                      <p className="text-sm font-semibold">{new Date(request.scheduledAt).toLocaleString()}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <Button 
+                                  onClick={() => handleAccept(request.id!)}
+                                  className="w-full md:w-auto self-end bg-secondary hover:bg-secondary/80 text-white"
+                                >
+                                  Accept Job
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                          <p className="text-slate-500">No pending requests available at the moment.</p>
+                        </div>
+                      )}
                     </div>
                   ) : (
-                    <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                      <p className="text-slate-500">No pending requests available at the moment.</p>
-                    </div>
+                    <CollectorMap 
+                      requests={pendingRequests} 
+                      onAccept={(req) => handleAccept(req.id!)} 
+                    />
                   )}
                 </motion.div>
               ) : (

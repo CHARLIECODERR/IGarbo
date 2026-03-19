@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Camera, MapPin, Calendar, Trash2, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { MapPicker } from "@/components/maps/MapPicker";
 
 const WASTE_TYPES = ["Plastic", "Organic", "Metal", "Paper", "Electronic", "Other"];
 
@@ -22,6 +23,7 @@ export default function NewRequestPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [type, setType] = useState(WASTE_TYPES[0]);
   const [address, setAddress] = useState("");
+  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
   const [schedule, setSchedule] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +36,10 @@ export default function NewRequestPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !image || !address || !schedule) return;
+    if (!user || !image || !address || !schedule || !location) {
+      if (!location) alert("Please select a location on the map.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -45,8 +50,8 @@ export default function NewRequestPage() {
         type,
         imageUrl,
         address,
-        latitude: 0, // Placeholder
-        longitude: 0, // Placeholder
+        latitude: location.lat,
+        longitude: location.lng,
         scheduledAt: schedule,
       });
       router.push("/user/dashboard");
@@ -129,13 +134,15 @@ export default function NewRequestPage() {
                   </div>
                 </div>
 
-                {/* Location Input */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Pickup Address</label>
+                {/* Location Selection */}
+                <div className="space-y-4">
+                  <label className="text-sm font-medium">Pin Your Precise Location</label>
+                  <MapPicker onLocationSelect={(lat, lng) => setLocation({ lat, lng })} />
+                  
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <Input 
-                      placeholder="Enter your street address" 
+                      placeholder="Confirm your street address/landmark" 
                       className="pl-12" 
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
