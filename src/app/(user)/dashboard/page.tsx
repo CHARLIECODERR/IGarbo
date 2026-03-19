@@ -6,9 +6,12 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { LogOut, User as UserIcon, Plus, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { LogOut, User as UserIcon, Plus, Clock, CheckCircle2, AlertCircle, MapPin, Trash2, Recycle, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUserRequests, WasteRequest } from "@/lib/services/request-service";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function UserDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -196,6 +199,3 @@ export default function UserDashboard() {
     </div>
   );
 }
-
-import { Trash2, Recycle, Calendar } from "lucide-react";
-import Link from "next/link";
