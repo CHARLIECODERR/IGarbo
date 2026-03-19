@@ -1,0 +1,77 @@
+﻿   Ôû▓ Next.js 15.1.7
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+node.exe : 
+(node:26320) [MODULE_TY
+PELESS_PACKAGE_JSON] 
+Warning: Module type 
+of file:///D:/Vedant/IG
+arbo/tailwind.config.ts
+?id=1773908786294 is 
+not specified and it 
+doesn't parse as 
+CommonJS.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ((node:26320)    
+ [M...se as CommonJ    
+S.:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+Reparsing as ES module 
+because module syntax 
+was detected. This 
+incurs a performance 
+overhead.
+To eliminate this 
+warning, add "type": 
+"module" to D:\Vedant\I
+Garbo\package.json.
+(Use `node 
+--trace-warnings ...` 
+to show where the 
+warning was created)
+ Ô£ô Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/10) ...
+   Generating static pages (2/10) 
+   Generating static pages (4/10) 
+   Generating static pages (7/10) 
+ Ô£ô Generating static pages (10/10)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+Ôöî Ôùï /                                    5.07 kB         162 kB
+Ôö£ Ôùï /_not-found                          979 B           106 kB
+Ôö£ Ôùï /admin/dashboard                     2.33 kB         298 kB
+Ôö£ Ôùï /auth/login                          2.35 kB         301 kB
+Ôö£ Ôùï /auth/signup                         2.65 kB         302 kB
+Ôö£ Ôùï /collector/dashboard                 8.16 kB         336 kB
+Ôö£ Ôùï /user/dashboard                      4.48 kB         304 kB
+Ôöö Ôùï /user/new-request                    4.7 kB          336 kB
++ First Load JS shared by all            105 kB
+  Ôö£ chunks/4bd1b696-46dc8d472a742665.js  52.9 kB
+  Ôö£ chunks/517-1dfaf9d6715d65fd.js       50.5 kB
+  Ôöö other shared chunks (total)          1.98 kB
+
+
+ãÆ Middleware                             31.9 kB
+
+Ôùï  (Static)  prerendered as static content
+

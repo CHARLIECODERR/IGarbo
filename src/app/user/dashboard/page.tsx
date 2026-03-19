@@ -180,11 +180,11 @@ export default function UserDashboard() {
               <CardContent className="p-6 pt-6">
                 <div className="relative z-10">
                   <h3 className="font-bold text-lg mb-2">Eco Impact</h3>
-                  <p className="text-sm text-slate-400 mb-4 tracking-tight">By recycling properly, you've saved approximately <span className="text-primary font-bold">12kg</span> of carbon emissions this month.</p>
+                  <p className="text-sm text-slate-400 mb-4 tracking-tight">By recycling properly, you've saved approximately <span className="text-primary font-bold">{requests.filter(r => r.status === 'completed').length * 2}kg</span> of carbon emissions so far.</p>
                   <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
-                      whileInView={{ width: "65%" }}
+                      animate={{ width: `${Math.min(100, (requests.filter(r => r.status === 'completed').length * 2 / 20) * 100)}%` }}
                       className="bg-primary h-full"
                     />
                   </div>

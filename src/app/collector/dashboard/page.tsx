@@ -21,6 +21,8 @@ export default function CollectorDashboard() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [activeTab, setActiveTab] = useState<"available" | "my-jobs">("available");
+  const [batchMode, setBatchMode] = useState(false);
+  const [myJobsView, setMyJobsView] = useState<"list" | "map">("list");
   const router = useRouter();
 
   useEffect(() => {
@@ -128,19 +130,31 @@ export default function CollectorDashboard() {
                 >
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold font-heading text-white">Available Requests Nearby</h2>
-                    <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
-                      <button 
-                        onClick={() => setViewMode("list")}
-                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'list' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
-                      >
-                        List
-                      </button>
-                      <button 
-                        onClick={() => setViewMode("map")}
-                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'map' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
-                      >
-                        Map
-                      </button>
+                    <div className="flex items-center gap-4">
+                      {viewMode === "map" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setBatchMode(!batchMode)}
+                          className={cn("text-[10px] font-bold uppercase border-white/10", batchMode ? "bg-primary/20 text-primary border-primary/30" : "text-slate-400")}
+                        >
+                          {batchMode ? "Clustering On" : "Show Clusters"}
+                        </Button>
+                      )}
+                      <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                        <button 
+                          onClick={() => setViewMode("list")}
+                          className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'list' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
+                        >
+                          List
+                        </button>
+                        <button 
+                          onClick={() => setViewMode("map")}
+                          className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", viewMode === 'map' ? "bg-secondary text-white shadow-lg" : "text-slate-500")}
+                        >
+                          Map
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -193,6 +207,7 @@ export default function CollectorDashboard() {
                     <CollectorMap 
                       requests={pendingRequests} 
                       onAccept={(req) => handleAccept(req.id!)} 
+                      showClusters={batchMode}
                     />
                   )}
                 </motion.div>
@@ -204,48 +219,79 @@ export default function CollectorDashboard() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-4"
                 >
-                  <h2 className="text-xl font-bold font-heading">Current Assignments</h2>
-                  {myJobs.length > 0 ? (
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold font-heading text-white">Current Assignments</h2>
+                    <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                      <button 
+                        onClick={() => setMyJobsView("list")}
+                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", myJobsView === 'list' ? "bg-primary text-white shadow-lg" : "text-slate-500")}
+                      >
+                        List
+                      </button>
+                      <button 
+                        onClick={() => setMyJobsView("map")}
+                        className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all", myJobsView === 'map' ? "bg-primary text-white shadow-lg" : "text-slate-500")}
+                      >
+                        Route
+                      </button>
+                    </div>
+                  </div>
+
+                  {myJobsView === "list" ? (
                     <div className="grid gap-4">
-                      {myJobs.map((job) => (
-                        <Card key={job.id} className={cn(
-                          "border-white/5",
-                          job.status === 'completed' ? "opacity-60" : "border-secondary/30"
-                        )}>
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-4">
-                                <div className="h-16 w-16 rounded-xl overflow-hidden glass">
-                                  <img src={job.imageUrl} className="w-full h-full object-cover" />
+                      {myJobs.length > 0 ? (
+                        myJobs.map((job) => (
+                          <Card key={job.id} className={cn(
+                            "border-white/5",
+                            job.status === 'completed' ? "opacity-60" : "border-secondary/30"
+                          )}>
+                            <CardContent className="p-6">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="h-16 w-16 rounded-xl overflow-hidden glass">
+                                    <img src={job.imageUrl} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-bold">{job.type} Collection</h3>
+                                    <p className="text-xs text-slate-500">{job.address}</p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <h3 className="font-bold">{job.type} Collection</h3>
-                                  <p className="text-xs text-slate-500">{job.address}</p>
+                                <div className="flex items-center gap-4">
+                                  {job.status === 'accepted' ? (
+                                    <Button 
+                                      size="sm" 
+                                      onClick={() => handleComplete(job.id!)}
+                                      className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                                    >
+                                      <Check size={16} /> Complete
+                                    </Button>
+                                  ) : (
+                                    <span className="flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-widest">
+                                      <CheckCircle2 size={16} /> Completed
+                                    </span>
+                                  )}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-4">
-                                {job.status === 'accepted' ? (
-                                  <Button 
-                                    size="sm" 
-                                    onClick={() => handleComplete(job.id!)}
-                                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                                  >
-                                    <Check size={16} /> Complete
-                                  </Button>
-                                ) : (
-                                  <span className="flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-widest">
-                                    <CheckCircle2 size={16} /> Completed
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                          <p className="text-slate-500">You haven't accepted any jobs yet.</p>
+                        </div>
+                      )}
                     </div>
                   ) : (
-                    <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                      <p className="text-slate-500">You haven't accepted any jobs yet.</p>
+                    <div className="space-y-4">
+                      <CollectorMap 
+                        requests={myJobs} 
+                        showRoute={true}
+                      />
+                      {myJobs.filter(j => j.status === 'accepted').length < 2 && (
+                        <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl text-center">
+                          <p className="text-xs text-primary font-medium">Add at least 2 active jobs to see an optimized route!</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>
