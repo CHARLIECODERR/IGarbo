@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Recycle } from "lucide-react";
 
+import { useAuth } from "@/contexts/auth-context";
+import { NotificationCenter } from "./NotificationCenter";
+
 export function Navbar() {
   const pathname = usePathname();
+  const { user, role } = useAuth();
   const isAuthPage = pathname.startsWith("/auth/login") || pathname.startsWith("/auth/signup");
 
   if (isAuthPage) return null;
@@ -38,13 +42,24 @@ export function Navbar() {
             About
           </Link>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4">
-          <Link href="/auth/login">
-            <Button variant="ghost" className="text-white">Log in</Button>
-          </Link>
-          <Link href="/auth/signup">
-            <Button>Sign up</Button>
-          </Link>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4 items-center">
+          {user && role ? (
+            <>
+              <NotificationCenter />
+              <Link href={`/${role}/dashboard`}>
+                <Button variant="ghost" className="text-white">Dashboard</Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/auth/login">
+                <Button variant="ghost" className="text-white">Log in</Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button>Sign up</Button>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </motion.header>
