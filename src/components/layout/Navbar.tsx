@@ -8,7 +8,7 @@ import { Recycle } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
-  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/signup");
+  const isAuthPage = pathname.startsWith("/auth/login") || pathname.startsWith("/auth/signup");
 
   if (isAuthPage) return null;
 
@@ -39,10 +39,10 @@ export function Navbar() {
           </Link>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4">
-          <Link href="/login">
+          <Link href="/auth/login">
             <Button variant="ghost" className="text-white">Log in</Button>
           </Link>
-          <Link href="/signup">
+          <Link href="/auth/signup">
             <Button>Sign up</Button>
           </Link>
         </div>

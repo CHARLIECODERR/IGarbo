@@ -57,7 +57,7 @@ export function HeroSection() {
             className="relative rounded-full px-4 py-1.5 text-sm leading-6 text-slate-400 ring-1 ring-white/10 hover:ring-white/20 transition-all bg-white/5 backdrop-blur-sm"
           >
             🚀 The future of waste management is here.{" "}
-            <Link href="/signup" className="font-semibold text-primary ml-1 group">
+            <Link href="/auth/signup" className="font-semibold text-primary ml-1 group">
               Join now <span aria-hidden="true" className="inline-block group-hover:translate-x-1 transition-transform">&rarr;</span>
             </Link>
           </motion.div>
@@ -88,7 +88,7 @@ export function HeroSection() {
             transition={{ delay: 0.3 }}
             className="mt-12 flex items-center justify-center gap-x-6"
           >
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button size="lg" className="flex items-center gap-2 h-16 px-10 text-lg shadow-primary/30">
                 Get Started Free <ArrowRight size={20} />
               </Button>

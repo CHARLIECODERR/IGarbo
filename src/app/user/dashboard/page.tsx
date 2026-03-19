@@ -31,7 +31,7 @@ export default function UserDashboard() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   if (authLoading) return null;
